@@ -1,0 +1,25 @@
+---
+title: "p8105_hw3_yz4433"
+author: "Yifei Zhao"
+date: "2022-10-13"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stringr)
+```
+
+## Problem 2
+### Manipulate data
+```{r}
+data_acc = read_csv(file = "./data/accel_data.csv") %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "activity", 
+    values_to = "act_counts") %>% 
+  add_column(group = "days", .after = "day") %>% 
+  mutate(group = ifelse((pull(data_acc, day) == "Saturday" | pull(data_acc, day) == "Sunday"), 'weekend', 'weekday'))
+```
