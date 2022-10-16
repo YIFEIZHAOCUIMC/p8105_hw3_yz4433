@@ -59,5 +59,41 @@ ny_noaa = ny_noaa %>%
   mutate(prcp = as.numeric(prcp)/10, tmax = as.numeric(tmax)/10, tmin = as.numeric(tmin)/10, snow = as.numeric(snow))
 ```
 
+### temperature plot
+#### Jan and July data
+```{r}
+janmax =
+  ny_noaa %>%
+  drop_na(tmax) %>%
+  filter(month == "01")
+df_jan = aggregate(tmax ~ id+year, janmax, mean)
 
+julmax =
+  ny_noaa %>%
+  drop_na(tmax) %>%
+  filter(month == "07")
+df_jul = aggregate(tmax ~ id+year, julmax, mean)
+```
 
+#### plotting
+```{r}
+tmaxjan = 
+  df_jan %>% 
+  ggplot(aes(x = year, y = tmax, color = id, group = id)) + 
+  geom_point(size = 1, alpha = .5) +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+tmaxjul = 
+  df_jul %>% 
+  ggplot(aes(x = year, y = tmax, color = id,  group = id)) + 
+  geom_point(size = 1, alpha = .5) +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1)) +
+  theme(legend.position = "none")
+
+tmaxjan/tmaxjul
+```
