@@ -74,7 +74,15 @@ instacart %>%
   knitr::kable()
 ```
 
-
+### table of Pink Lady Apples and Coffee Ice Cream mean ordered hour
+```{r}
+instacart %>%
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>%
+  group_by(product_name, order_dow) %>%
+  summarize(mean_hour = mean(order_hour_of_day)) %>%
+  spread(key = order_dow, value = mean_hour) %>%
+  knitr::kable(digits = 2)
+```
 
 ## Problem 2
 ### Manipulate data
