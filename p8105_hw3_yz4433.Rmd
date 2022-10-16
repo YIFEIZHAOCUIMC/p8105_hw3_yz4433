@@ -16,12 +16,8 @@ library(stringr)
 ```{r}
 data_acc = read_csv(file = "./data/accel_data.csv") %>% 
   janitor::clean_names() %>% 
-  pivot_longer(
-    activity_1:activity_1440,
-    names_to = "activity", 
-    values_to = "act_counts") %>% 
   add_column(group = "days", .after = "day") %>% 
-  mutate(group = ifelse((pull(data_acc, day) == "Saturday" | pull(data_acc, day) == "Sunday"), 'weekend', 'weekday'))
+  mutate(group = ifelse((day == "Saturday" | day == "Sunday"), 'weekend', 'weekday'))
 ```
 
 ### Table showing totals
@@ -31,10 +27,20 @@ data_acc = data_acc %>%
 knitr::kable(data_acc[, 1:5], "simple")
 ```
 
+```{r}
+data_acc = data_acc[,-5] %>% 
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "activity", 
+    values_to = "act_counts") %>%
+  mutate(activity = substr(activity, 10, 13))
+```
+
 ### Activity plot
 ```{r}
 ggplot(data_acc, aes(x = activity, y = act_counts)) + 
-  geom_point(aes(color = day)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) 
+  geom_point(aes(color = day), size = 1, alpha = 0.5) +
+  scale_x_discrete(breaks = seq(0, 1440, 60)) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
