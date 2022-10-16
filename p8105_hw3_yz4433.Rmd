@@ -33,14 +33,31 @@ data_acc = data_acc[,-5] %>%
     activity_1:activity_1440,
     names_to = "activity", 
     values_to = "act_counts") %>%
-  mutate(activity = substr(activity, 10, 13))
+  mutate(activity = as.integer(substr(activity, 10, 13)))
 ```
 
 ### Activity plot
 ```{r}
 ggplot(data_acc, aes(x = activity, y = act_counts)) + 
   geom_point(aes(color = day), size = 1, alpha = 0.5) +
-  scale_x_discrete(breaks = seq(0, 1440, 60)) +
+  scale_x_discrete(labels = c(0, 1440, 60)) +
   theme(axis.text.x = element_text(angle = 90))
 ```
+
+## Problem 3
+```{r}
+library(p8105.datasets)
+library(patchwork)
+data("ny_noaa")
+```
+
+### Data cleaning
+```{r}
+ny_noaa = ny_noaa %>% 
+  janitor::clean_names() %>% 
+  separate(date, into = c("year", "month", "day")) %>% 
+  mutate(prcp = as.numeric(prcp)/10, tmax = as.numeric(tmax)/10, tmin = as.numeric(tmin)/10, snow = as.numeric(snow))
+```
+
+
 
