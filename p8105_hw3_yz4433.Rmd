@@ -40,7 +40,7 @@ data_acc = data_acc[,-5] %>%
 ```{r}
 ggplot(data_acc, aes(x = activity, y = act_counts)) + 
   geom_point(aes(color = day), size = 1, alpha = 0.5) +
-  scale_x_discrete(labels = c(0, 1440, 60)) +
+  scale_x_continuous(breaks = seq(0, 1440, 60)) +
   theme(axis.text.x = element_text(angle = 90))
 ```
 
@@ -82,7 +82,7 @@ tmaxjan =
   ggplot(aes(x = year, y = tmax, color = id, group = id)) + 
   geom_point(size = 1, alpha = .5) +
   geom_line() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
 ```
 
@@ -92,7 +92,7 @@ tmaxjul =
   ggplot(aes(x = year, y = tmax, color = id,  group = id)) + 
   geom_point(size = 1, alpha = .5) +
   geom_line() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
 
 tmaxjan/tmaxjul
@@ -108,7 +108,7 @@ ny_temp =
   geom_point(aes(color = year), alpha = .5) +
   theme(legend.position = "bottom", legend.key.size = unit(5, "pt")) +
   # theme(axis.text.x=element_blank())
-  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 ```{r}
@@ -120,7 +120,7 @@ ny_snow =
   viridis::scale_fill_viridis(discrete = TRUE) +
   theme(legend.position = "bottom", legend.key.size = unit(5, "pt")) +
   # theme(axis.text.x=element_blank())
-  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ny_temp + ny_snow
 ```
