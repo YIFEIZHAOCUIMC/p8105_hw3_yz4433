@@ -30,3 +30,11 @@ data_acc = data_acc %>%
   add_column(total = rowSums(data_acc[,5:50]), .after = "group")
 knitr::kable(data_acc[, 1:5], "simple")
 ```
+
+### Activity plot
+```{r}
+ggplot(data_acc, aes(x = activity, y = act_counts)) + 
+  geom_point(aes(color = day)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) 
+```
+
