@@ -97,3 +97,30 @@ tmaxjul =
 
 tmaxjan/tmaxjul
 ```
+
+### tmax vs tmin, and snowfall plotting
+```{r}
+ny_temp = 
+  ny_noaa %>% 
+  drop_na(tmax) %>% 
+  drop_na(tmin) %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = year), alpha = .5) +
+  theme(legend.position = "bottom", legend.key.size = unit(5, "pt")) +
+  # theme(axis.text.x=element_blank())
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1))
+```
+
+```{r}
+ny_snow =
+  ny_noaa %>%
+  filter(snow > 0 & snow < 100) %>% 
+  ggplot(aes(x = snow, color = year)) +
+  geom_density(alpha = .5) + 
+  viridis::scale_fill_viridis(discrete = TRUE) +
+  theme(legend.position = "bottom", legend.key.size = unit(5, "pt")) +
+  # theme(axis.text.x=element_blank())
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_text(size = 1))
+
+ny_temp + ny_snow
+```
