@@ -9,6 +9,8 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(stringr)
+library(p8105.datasets)
+library(patchwork)
 ```
 
 ## Problem 2
@@ -19,14 +21,17 @@ data_acc = read_csv(file = "./data/accel_data.csv") %>%
   add_column(group = "days", .after = "day") %>% 
   mutate(group = ifelse((day == "Saturday" | day == "Sunday"), 'weekend', 'weekday'))
 ```
+The final `r nrow(data_acc)` $\times$ `r ncol(data_acc)` dataset, data_acc,  illustrates activity counts for each minute of a 24-hour day starting at midnight of 35 days in 5 weeks. Parts of counts values are 1 and the dataset includes a weekday vs weekend variable.
 
 ### Table showing totals
 ```{r}
 data_acc = data_acc %>%
-  add_column(total = rowSums(data_acc[,5:50]), .after = "group")
+  add_column(total = rowSums(data_acc[,5:1444]), .after = "group")
 knitr::kable(data_acc[, 1:5], "simple")
 ```
+According to the table, we find .... The maximum is `r max(data_acc$total)` and the minimum is `r min(data_acc$total)`.
 
+### Activity plot
 ```{r}
 data_acc = data_acc[,-5] %>% 
   pivot_longer(
@@ -36,28 +41,31 @@ data_acc = data_acc[,-5] %>%
   mutate(activity = as.integer(substr(activity, 10, 13)))
 ```
 
-### Activity plot
 ```{r}
 ggplot(data_acc, aes(x = activity, y = act_counts)) + 
   geom_point(aes(color = day), size = 1, alpha = 0.5) +
   scale_x_continuous(breaks = seq(0, 1440, 60)) +
   theme(axis.text.x = element_text(angle = 90))
 ```
+From the activity plot, the data have several peaks and troughs. Overall, Monday high Wednesday low.
 
 ## Problem 3
-```{r}
-library(p8105.datasets)
-library(patchwork)
-data("ny_noaa")
-```
-
 ### Data cleaning
 ```{r}
+data("ny_noaa")
 ny_noaa = ny_noaa %>% 
   janitor::clean_names() %>% 
   separate(date, into = c("year", "month", "day")) %>% 
   mutate(prcp = as.numeric(prcp)/10, tmax = as.numeric(tmax)/10, tmin = as.numeric(tmin)/10, snow = as.numeric(snow))
 ```
+
+```{r}
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+```
+The mode of snowfall value is `r getmode(ny_noaa$snow)`. The reason could be that temperatures and precipitation of the data imply not strong condition of snowfall in most cases.
 
 ### temperature plot
 #### Jan and July data
@@ -80,6 +88,7 @@ df_jul = aggregate(tmax ~ id+year, julmax, mean)
 tmaxjan = 
   df_jan %>% 
   ggplot(aes(x = year, y = tmax, color = id, group = id)) + 
+  ggtitle(" Average max temperature in January") +
   geom_point(size = 1, alpha = .5) +
   geom_line() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -90,6 +99,7 @@ tmaxjan =
 tmaxjul = 
   df_jul %>% 
   ggplot(aes(x = year, y = tmax, color = id,  group = id)) + 
+  ggtitle(" Average max temperature in July") +
   geom_point(size = 1, alpha = .5) +
   geom_line() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -97,6 +107,7 @@ tmaxjul =
 
 tmaxjan/tmaxjul
 ```
+According to the year-tmax 2-panel plot, 
 
 ### tmax vs tmin, and snowfall plotting
 ```{r}
