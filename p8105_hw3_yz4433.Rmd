@@ -23,3 +23,10 @@ data_acc = read_csv(file = "./data/accel_data.csv") %>%
   add_column(group = "days", .after = "day") %>% 
   mutate(group = ifelse((pull(data_acc, day) == "Saturday" | pull(data_acc, day) == "Sunday"), 'weekend', 'weekday'))
 ```
+
+### Table showing totals
+```{r}
+data_acc = data_acc %>%
+  add_column(total = rowSums(data_acc[,5:50]), .after = "group")
+knitr::kable(data_acc[, 1:5], "simple")
+```
