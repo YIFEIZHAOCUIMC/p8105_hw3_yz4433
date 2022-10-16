@@ -13,6 +13,8 @@ library(p8105.datasets)
 library(patchwork)
 ```
 
+## Problem 1
+
 ## Problem 2
 ### Manipulate data
 ```{r}
@@ -29,7 +31,7 @@ data_acc = data_acc %>%
   add_column(total = rowSums(data_acc[,5:1444]), .after = "group")
 knitr::kable(data_acc[, 1:5], "simple")
 ```
-According to the table, we find .... The maximum is `r max(data_acc$total)` and the minimum is `r min(data_acc$total)`.
+According to the table, we find the maximum is `r max(data_acc$total)` and the minimum is `r min(data_acc$total)`, but no apparent trends relating to weekdays or weekends (certain days in general week).
 
 ### Activity plot
 ```{r}
@@ -44,10 +46,12 @@ data_acc = data_acc[,-5] %>%
 ```{r}
 ggplot(data_acc, aes(x = activity, y = act_counts)) + 
   geom_point(aes(color = day), size = 1, alpha = 0.5) +
+  ggtitle("24-hour activity time courses for each day") +
+  xlab('activity time in minute') +
   scale_x_continuous(breaks = seq(0, 1440, 60)) +
   theme(axis.text.x = element_text(angle = 90))
 ```
-From the activity plot, the data have several peaks and troughs. Overall, Monday high Wednesday low.
+From the activity plot, the data have several peaks and troughs. Overall, Monday high Wednesday low. There are two main peak areas, activity time points lie in (570,750) and (1170,1320), and the main trough area is about (60,240). The results are strongly relating to people's daily life (low activity when sleep, high when work or study).
 
 ## Problem 3
 ### Data cleaning
@@ -65,7 +69,7 @@ getmode <- function(v) {
    uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 ```
-The mode of snowfall value is `r getmode(ny_noaa$snow)`. The reason could be that temperatures and precipitation of the data imply not strong condition of snowfall in most cases.
+We divide the prcp, tmax, and tmin values by 10 to get the real precipitation and temperature values. The mode of snowfall value is `r getmode(ny_noaa$snow)`. The reason could be that temperatures and precipitation of the data imply not strong conditions of snowfall in most cases.
 
 ### temperature plot
 #### Jan and July data
@@ -107,7 +111,7 @@ tmaxjul =
 
 tmaxjan/tmaxjul
 ```
-According to the year-tmax 2-panel plot, 
+According to the year-tmax 2-panel plot, the max temperatures in January fluctuate greatly, and these two subplots are of the similar trends (correspondingly reach the peaks and troughs), which implies the seasonal or yearly weather simultaneously influence the near dates. Both of the data have outliers. For example, the lowest point in Jan 1982 and the lowest point in Jul 1988.
 
 ### tmax vs tmin, and snowfall plotting
 ```{r}
@@ -116,10 +120,11 @@ ny_temp =
   drop_na(tmax) %>% 
   drop_na(tmin) %>% 
   ggplot(aes(x = tmin, y = tmax)) + 
-  geom_point(aes(color = year), alpha = .5) +
-  theme(legend.position = "bottom", legend.key.size = unit(5, "pt")) +
+  ggtitle("tmax vs tmin") +
+  geom_hex(alpha = .5) +
+  theme(legend.position = "bottom", legend.key.size = unit(30, "pt"))
   # theme(axis.text.x=element_blank())
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  # theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 ```{r}
@@ -127,11 +132,12 @@ ny_snow =
   ny_noaa %>%
   filter(snow > 0 & snow < 100) %>% 
   ggplot(aes(x = snow, color = year)) +
+  ggtitle("distribution of snowfall values") +
   geom_density(alpha = .5) + 
   viridis::scale_fill_viridis(discrete = TRUE) +
-  theme(legend.position = "bottom", legend.key.size = unit(5, "pt")) +
+  theme(legend.position = "bottom", legend.key.size = unit(6, "pt"))
   # theme(axis.text.x=element_blank())
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  # theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ny_temp + ny_snow
 ```
