@@ -124,6 +124,8 @@ ny_noaa = ny_noaa %>%
   mutate(prcp = as.numeric(prcp)/10, tmax = as.numeric(tmax)/10, tmin = as.numeric(tmin)/10, snow = as.numeric(snow))
 ```
 
+For ny_noaa data, a `r nrow(ny_noaa)` $\times$ `r ncol(ny_noaa)` dataset, the key variables are prcp, snow, snwd, tmax, and tmin, describing weather conditions, and it illustrates the statistics of all New York state weather stations from January 1, 1981 through December 31, 2010. The dataset has a large number of missing values. For example, `r sum(is.na(ny_noaa$prcp))` missing values in prcp and `r sum(is.na(ny_noaa$tmax))` missing values in tmax. Overall, the number of missing values of ny_noaa is `r sum(is.na(ny_noaa))`.
+
 ```{r}
 getmode <- function(v) {
    uniqv <- unique(v)
@@ -186,8 +188,6 @@ ny_temp =
   ggtitle("tmax vs tmin") +
   geom_hex(alpha = .5) +
   theme(legend.position = "bottom", legend.key.size = unit(30, "pt"))
-  # theme(axis.text.x=element_blank())
-  # theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 ```{r}
@@ -199,8 +199,6 @@ ny_snow =
   geom_density(alpha = .5) + 
   viridis::scale_fill_viridis(discrete = TRUE) +
   theme(legend.position = "bottom", legend.key.size = unit(6, "pt"))
-  # theme(axis.text.x=element_blank())
-  # theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ny_temp + ny_snow
 ```
